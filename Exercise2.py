@@ -1,66 +1,27 @@
 import turtle
-import math
 
-def draw_pifagoras_tree(t, branch_length, level):
+def pifagor_tree(t, length, level):
     if level == 0:
         return
-    else:
-        # Draw main branch
-        t.forward(branch_length)
-
-        # Save the current position and heading
-        position = t.position()
-        heading = t.heading()
-
-        # Draw the left subtree
-        t.left(45)
-        draw_pifagoras_tree(t, branch_length * 0.6, level - 1)
-
-        # Return to the saved position and heading
-        t.penup()
-        t.setposition(position)
-        t.setheading(heading)
-        t.pendown()
-
-        # Draw the right subtree
-        t.right(90)
-        draw_pifagoras_tree(t, branch_length * 0.6, level - 1)
-
-        # Return to the saved position and heading
-        t.penup()
-        t.setposition(position)
-        t.setheading(heading)
-        t.pendown()
-
-        # Go back to the starting position
-        t.right(45)
-        t.backward(branch_length)
+    t.forward(length)
+    t.left(45)
+    pifagor_tree(t, length * 0.7, level - 1)
+    t.right(90)
+    pifagor_tree(t, length * 0.7, level - 1)
+    t.left(45)
+    t.backward(length)
 
 def main():
-    # Setup turtle
+    level = int(input("Введіть рівень рекурсії: "))
+    t = turtle.Turtle()
     screen = turtle.Screen()
-    screen.bgcolor("white")
-    turtle.speed(0)  # Set the turtle speed to the maximum
-
-    # Create turtle
-    pifagoras_turtle = turtle.Turtle()
-    pifagoras_turtle.color("green")
-    pifagoras_turtle.width(2)
-
-    # Move turtle to starting position
-    pifagoras_turtle.left(90)
-    pifagoras_turtle.up()
-    pifagoras_turtle.backward(200)
-    pifagoras_turtle.down()
-
-    # Set recursion level
-    recursion_level = int(turtle.numinput("Recursion Level", "Enter recursion level:", default=4))
-
-    # Draw the Pifagoras tree
-    draw_pifagoras_tree(pifagoras_turtle, 100, recursion_level)
-
-    # Close the turtle graphics window when clicked
-    turtle.exitonclick()
+    t.speed(0)
+    t.left(90)
+    t.penup()
+    t.goto(0, -200)
+    t.pendown()
+    pifagor_tree(t, 100, level)
+    screen.mainloop()
 
 if __name__ == "__main__":
     main()

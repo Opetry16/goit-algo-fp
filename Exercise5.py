@@ -1,15 +1,15 @@
 import uuid
 import heapq
-
 import networkx as nx
 import matplotlib.pyplot as plt
+import random
 
 class HeapNode:
-    def __init__(self, key, color="skyblue"):
+    def __init__(self, key, color=None):
         self.left = None
         self.right = None
         self.val = key
-        self.color = color  # Додатковий аргумент для зберігання кольору вузла
+        self.color = color if color else "#" + ''.join(random.choices('0123456789ABCDEF', k=6))  # Генеруємо випадковий колір
         self.id = str(uuid.uuid4())  # Унікальний ідентифікатор для кожного вузла
 
 def add_heap_edges(graph, node, pos, x=0, y=0, layer=1):
@@ -39,31 +39,21 @@ def draw_heap(heap_root):
     nx.draw(heap, pos=pos, labels=labels, arrows=False, node_size=2500, node_color=colors)
     plt.show()
 
-def dfs_traversal(node, depth=0, color="#000000"):
+def dfs_traversal(node, depth=0):
     if node is not None:
-        node.color = color
         print(f"Node: {node.val}, Depth: {depth}, Color: {node.color}")
-        dfs_traversal(node.left, depth + 1, get_color(color))
-        dfs_traversal(node.right, depth + 1, get_color(color))
+        dfs_traversal(node.left, depth + 1)
+        dfs_traversal(node.right, depth + 1)
 
 def bfs_traversal(root):
-    queue = [(root, 0, "#000000")]
+    queue = [(root, 0)]
 
     while queue:
-        node, depth, color = queue.pop(0)
+        node, depth = queue.pop(0)
         if node is not None:
-            node.color = color
             print(f"Node: {node.val}, Depth: {depth}, Color: {node.color}")
-            queue.append((node.left, depth + 1, get_color(color)))
-            queue.append((node.right, depth + 1, get_color(color)))
-
-def get_color(prev_color):
-    # Функція для отримання нового кольору від темного до світлого відтінку
-    r, g, b = int(prev_color[1:3], 16), int(prev_color[3:5], 16), int(prev_color[5:7], 16)
-    r = min(255, r + 30)
-    g = min(255, g + 30)
-    b = min(255, b + 30)
-    return "#{:02x}{:02x}{:02x}".format(r, g, b)
+            queue.append((node.left, depth + 1))
+            queue.append((node.right, depth + 1))
 
 # Створення бінарної купи
 heap_root = HeapNode(0)
@@ -71,7 +61,6 @@ heap_root.left = HeapNode(4)
 heap_root.left.left = HeapNode(5)
 heap_root.left.right = HeapNode(10)
 heap_root.right = HeapNode(1)
-heap_root
 
 # Обхід у глибину
 dfs_traversal(heap_root)
@@ -80,3 +69,4 @@ draw_heap(heap_root)
 # Обхід у ширину
 bfs_traversal(heap_root)
 draw_heap(heap_root)
+
