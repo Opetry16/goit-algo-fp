@@ -2,14 +2,13 @@ import uuid
 import heapq
 import networkx as nx
 import matplotlib.pyplot as plt
-import random
 
 class HeapNode:
-    def __init__(self, key, color=None):
+    def __init__(self, key):
         self.left = None
         self.right = None
         self.val = key
-        self.color = color if color else "#" + ''.join(random.choices('0123456789ABCDEF', k=6))  # Генеруємо випадковий колір
+        self.color = None  
         self.id = str(uuid.uuid4())  # Унікальний ідентифікатор для кожного вузла
 
 def add_heap_edges(graph, node, pos, x=0, y=0, layer=1):
@@ -39,11 +38,16 @@ def draw_heap(heap_root):
     nx.draw(heap, pos=pos, labels=labels, arrows=False, node_size=2500, node_color=colors)
     plt.show()
 
-def dfs_traversal(node, depth=0):
+def dfs_traversal(node, depth=0, start_color=0, end_color=255):
     if node is not None:
+        # Генеруємо колір з діапазону від темного до світлого відтінку
+        color = "#{:02x}{:02x}{:02x}".format(start_color, start_color, start_color)
+        node.color = color
         print(f"Node: {node.val}, Depth: {depth}, Color: {node.color}")
-        dfs_traversal(node.left, depth + 1)
-        dfs_traversal(node.right, depth + 1)
+        # Шукаємо наступний колір для лівого та правого вузла
+        next_color = (start_color + end_color) // 2
+        dfs_traversal(node.left, depth + 1, start_color, next_color)
+        dfs_traversal(node.right, depth + 1, next_color + 1, end_color)
 
 def bfs_traversal(root):
     queue = [(root, 0)]
@@ -51,6 +55,9 @@ def bfs_traversal(root):
     while queue:
         node, depth = queue.pop(0)
         if node is not None:
+            # Генеруємо колір з діапазону від темного до світлого відтінку
+            color = "#{:02x}{:02x}{:02x}".format(depth, depth, depth)
+            node.color = color
             print(f"Node: {node.val}, Depth: {depth}, Color: {node.color}")
             queue.append((node.left, depth + 1))
             queue.append((node.right, depth + 1))
@@ -69,4 +76,5 @@ draw_heap(heap_root)
 # Обхід у ширину
 bfs_traversal(heap_root)
 draw_heap(heap_root)
+
 
